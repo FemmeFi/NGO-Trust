@@ -1,12 +1,32 @@
 // packages/nextjs/app/register/page.tsx
 "use client";
 
-import { useState } from "react";
-import { Web3Button } from "@web3modal/react";
-import { useWriteContract, useWaitForTransactionReceipt, useAccount } from "wagmi";
-import { useDeployedContractInfo } from "~~/hooks/scaffold-eth/useDeployedContractInfo";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Web3Button } from "@web3modal/react";
+import { useAccount, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
+import { useDeployedContractInfo } from "~~/hooks/scaffold-eth/useDeployedContractInfo";
+
+// packages/nextjs/app/register/page.tsx
+
+// packages/nextjs/app/register/page.tsx
+
+// packages/nextjs/app/register/page.tsx
+
+// packages/nextjs/app/register/page.tsx
+
+// packages/nextjs/app/register/page.tsx
+
+// packages/nextjs/app/register/page.tsx
+
+// packages/nextjs/app/register/page.tsx
+
+// packages/nextjs/app/register/page.tsx
+
+// packages/nextjs/app/register/page.tsx
+
+// packages/nextjs/app/register/page.tsx
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -16,12 +36,12 @@ export default function RegisterPage() {
     location: "",
     president: "",
     ensName: "",
-    avatar: ""
+    avatar: "",
   });
 
   const { address, isConnected } = useAccount();
   const router = useRouter();
-  
+
   const { data: contractInfo } = useDeployedContractInfo("NGORegistry" as any);
   const { writeContract, data: hash, isPending } = useWriteContract();
   const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({ hash });
@@ -30,25 +50,36 @@ export default function RegisterPage() {
     e.preventDefault();
     if (!isConnected) return;
 
-    writeContract({
-      address: contractInfo?.address,
-      abi: contractInfo?.abi,
-      functionName: "registerNGO",
-      args: [
-        formData.name,
-        formData.description,
-        formData.website,
-        formData.location,
-        formData.president,
-        formData.ensName,
-        formData.avatar
-      ],
-    });
+    if (!contractInfo?.address || !contractInfo?.abi) {
+      console.error("Contract info missing");
+      return;
+    }
+
+    try {
+      await writeContract({
+        address: contractInfo.address,
+        abi: contractInfo.abi,
+        functionName: "registerNGO",
+        args: [
+          formData.name,
+          formData.description,
+          formData.website,
+          formData.location,
+          formData.president,
+          formData.ensName,
+          formData.avatar,
+        ],
+      });
+    } catch (err) {
+      console.error("Contract call failed:", err);
+    }
   };
 
-  if (isConfirmed) {
-    router.push(`/ngo/${address}`);
-  }
+  useEffect(() => {
+    if (isConfirmed) {
+      router.push(`/ngo/${address}`);
+    }
+  }, [isConfirmed, address, router]);
 
   return (
     <div className="container mx-auto p-4">
@@ -80,7 +111,7 @@ export default function RegisterPage() {
                   type="text"
                   placeholder="Green Peace International"
                   value={formData.name}
-                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  onChange={e => setFormData({ ...formData, name: e.target.value })}
                   className="input input-bordered w-full"
                   required
                 />
@@ -92,7 +123,7 @@ export default function RegisterPage() {
                   type="text"
                   placeholder="greenpeace.eth"
                   value={formData.ensName}
-                  onChange={(e) => setFormData({...formData, ensName: e.target.value})}
+                  onChange={e => setFormData({ ...formData, ensName: e.target.value })}
                   className="input input-bordered w-full"
                 />
               </div>
@@ -103,7 +134,7 @@ export default function RegisterPage() {
               <textarea
                 placeholder="Describe your NGO's mission and activities..."
                 value={formData.description}
-                onChange={(e) => setFormData({...formData, description: e.target.value})}
+                onChange={e => setFormData({ ...formData, description: e.target.value })}
                 className="textarea textarea-bordered w-full"
                 rows={3}
                 required
@@ -117,7 +148,7 @@ export default function RegisterPage() {
                   type="url"
                   placeholder="https://your-ngo.org"
                   value={formData.website}
-                  onChange={(e) => setFormData({...formData, website: e.target.value})}
+                  onChange={e => setFormData({ ...formData, website: e.target.value })}
                   className="input input-bordered w-full"
                 />
               </div>
@@ -128,7 +159,7 @@ export default function RegisterPage() {
                   type="text"
                   placeholder="New York, USA"
                   value={formData.location}
-                  onChange={(e) => setFormData({...formData, location: e.target.value})}
+                  onChange={e => setFormData({ ...formData, location: e.target.value })}
                   className="input input-bordered w-full"
                   required
                 />
@@ -142,7 +173,7 @@ export default function RegisterPage() {
                   type="text"
                   placeholder="John Smith"
                   value={formData.president}
-                  onChange={(e) => setFormData({...formData, president: e.target.value})}
+                  onChange={e => setFormData({ ...formData, president: e.target.value })}
                   className="input input-bordered w-full"
                   required
                 />
@@ -154,25 +185,17 @@ export default function RegisterPage() {
                   type="url"
                   placeholder="https://example.com/avatar.png"
                   value={formData.avatar}
-                  onChange={(e) => setFormData({...formData, avatar: e.target.value})}
+                  onChange={e => setFormData({ ...formData, avatar: e.target.value })}
                   className="input input-bordered w-full"
                 />
               </div>
             </div>
 
-            <button 
-              type="submit" 
-              className="btn btn-primary w-full mt-6"
-              disabled={isPending || isConfirming}
-            >
+            <button type="submit" className="btn btn-primary w-full mt-6" disabled={isPending || isConfirming}>
               {isPending ? "Confirming..." : isConfirming ? "Registering..." : "Register NGO"}
             </button>
 
-            {hash && (
-              <div className="text-sm text-center">
-                Transaction: {hash.substring(0, 10)}...
-              </div>
-            )}
+            {hash && <div className="text-sm text-center">Transaction: {hash.substring(0, 10)}...</div>}
           </form>
         </div>
       )}

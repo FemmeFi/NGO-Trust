@@ -1,10 +1,31 @@
 // packages/nextjs/app/search/page.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
 import { useReadContract } from "wagmi";
 import { useDeployedContractInfo } from "~~/hooks/scaffold-eth/useDeployedContractInfo";
-import Link from "next/link";
+
+// packages/nextjs/app/search/page.tsx
+
+// packages/nextjs/app/search/page.tsx
+
+// packages/nextjs/app/search/page.tsx
+
+// packages/nextjs/app/search/page.tsx
+
+// packages/nextjs/app/search/page.tsx
+
+// packages/nextjs/app/search/page.tsx
+
+// packages/nextjs/app/search/page.tsx
+
+// packages/nextjs/app/search/page.tsx
+
+// packages/nextjs/app/search/page.tsx
+
+// packages/nextjs/app/search/page.tsx
 
 interface NGO {
   name: string;
@@ -22,7 +43,7 @@ interface NGO {
 export default function SearchPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredNGOs, setFilteredNGOs] = useState<NGO[]>([]);
-  
+
   const { data: contractInfo } = useDeployedContractInfo("NGORegistry" as any);
   const { data: allNGOs } = useReadContract({
     address: contractInfo?.address,
@@ -36,10 +57,11 @@ export default function SearchPage() {
       if (!searchTerm) {
         setFilteredNGOs(ngos);
       } else {
-        const filtered = ngos.filter(ngo =>
-          ngo.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          (ngo.ensName && ngo.ensName.toLowerCase().includes(searchTerm.toLowerCase())) ||
-          ngo.walletAddress.toLowerCase().includes(searchTerm.toLowerCase())
+        const filtered = ngos.filter(
+          ngo =>
+            ngo.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (ngo.ensName && ngo.ensName.toLowerCase().includes(searchTerm.toLowerCase())) ||
+            ngo.walletAddress.toLowerCase().includes(searchTerm.toLowerCase()),
         );
         setFilteredNGOs(filtered);
       }
@@ -50,9 +72,7 @@ export default function SearchPage() {
     <div className="container mx-auto p-4">
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold mb-4">Search NGOs</h1>
-        <p className="text-gray-600">
-          Discover registered NGOs by name, ENS domain, or wallet address
-        </p>
+        <p className="text-gray-600">Discover registered NGOs by name, ENS domain, or wallet address</p>
       </div>
 
       <div className="mb-8">
@@ -60,17 +80,15 @@ export default function SearchPage() {
           type="text"
           placeholder="Search by NGO name, ENS, or wallet address..."
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={e => setSearchTerm(e.target.value)}
           className="input input-bordered w-full max-w-2xl mx-auto block"
         />
       </div>
 
       {filteredNGOs.length === 0 && searchTerm && (
         <div className="text-center py-12">
-          <p className="text-gray-500 text-lg">No NGOs found matching "{searchTerm}"</p>
-          <p className="text-sm text-gray-400 mt-2">
-            Try a different search term or check the spelling
-          </p>
+          <p className="text-gray-500 text-lg">No NGOs found matching &quot;{searchTerm}&quot;</p>
+          <p className="text-sm text-gray-400 mt-2">Try a different search term or check the spelling</p>
         </div>
       )}
 
@@ -87,7 +105,7 @@ export default function SearchPage() {
               <div className="card-body">
                 <h2 className="card-title">{ngo.name}</h2>
                 <p className="text-sm text-gray-600 line-clamp-2">{ngo.description}</p>
-                
+
                 <div className="space-y-2 mt-4">
                   {ngo.ensName && (
                     <p className="text-sm">
@@ -103,6 +121,17 @@ export default function SearchPage() {
                   <p className="text-sm">
                     <span className="font-semibold">President:</span> {ngo.president}
                   </p>
+                  {ngo.avatar && (
+                    <div className="mt-2">
+                      <Image
+                        src={ngo.avatar}
+                        alt={`${ngo.name} avatar`}
+                        width={60}
+                        height={60}
+                        className="rounded-full"
+                      />
+                    </div>
+                  )}
                 </div>
 
                 <div className="card-actions justify-end mt-4">

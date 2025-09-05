@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useReadContract } from "wagmi";
 import { useDeployedContractInfo } from "~~/hooks/scaffold-eth/useDeployedContractInfo";
@@ -40,95 +40,85 @@ interface NGO {
   registrationDate: number;
 }
 
-export default function NGODetailPage() {
+export default function NGOPage() {
   const params = useParams();
-  const address = params.address as string;
   const [ngo, setNgo] = useState<NGO | null>(null);
-
   const { data: contractInfo } = useDeployedContractInfo("NGORegistry" as any);
-  const { data: ngoData } = useReadContract({
+
+  const { data: allNGOs } = useReadContract({
     address: contractInfo?.address,
     abi: contractInfo?.abi,
-    functionName: "getNGOByAddress",
-    args: [address],
+    functionName: "getAllNGOs",
   });
 
   useEffect(() => {
-    if (ngoData) {
-      setNgo(ngoData as unknown as NGO);
+    if (allNGOs && params.address) {
+      const address = Array.isArray(params.address) ? params.address[0] : params.address;
+      const ngos = allNGOs as unknown as NGO[];
+      const matchedNgo = ngos.find(n => n.walletAddress.toLowerCase() === address.toLowerCase());
+      setNgo(matchedNgo || null);
+    } else {
+      setNgo(null);
     }
-  }, [ngoData]);
+  }, [allNGOs, params.address]);
 
   if (!ngo) {
     return (
-      <div className="container mx-auto p-4">
-        <div className="text-center py-12">
-          <span className="loading loading-spinner loading-lg"></span>
-          <p className="mt-4">Loading NGO information...</p>
-        </div>
+      <div className="container mx-auto p-4 text-center py-12">
+        <p className="text-gray-500 text-lg">NGO not found.</p>
       </div>
     );
   }
 
   return (
     <div className="container mx-auto p-4">
-      <div className="mb-6">
-        <Link href="/search" className="btn btn-outline">
-          ← Back to Search
-        </Link>
+      <div className="flex flex-col md:flex-row items-center gap-6 mb-8">
+        {ngo.avatar ? (
+          <Image src={ngo.avatar} alt={`${ngo.name} avatar`} width={120} height={120} className="rounded-full" />
+        ) : (
+          <div className="w-28 h-28 bg-gray-200 rounded-full flex items-center justify-center text-gray-400">
+            No Avatar
+          </div>
+        )}
+
+        <div>
+          <h1 className="text-3xl font-bold">{ngo.name}</h1>
+          {ngo.isVerified && <span className="badge badge-success mt-2 inline-block">Verified</span>}
+          <p className="text-gray-600 mt-2">{ngo.description}</p>
+        </div>
       </div>
 
-      <div className="card bg-base-100 shadow-xl">
-        <div className="card-body">
-          <div className="flex items-start justify-between">
-            <div>
-              <h1 className="card-title text-3xl mb-2">{ngo.name}</h1>
-              {ngo.ensName && <p className="text-lg text-ens mb-2">🌐 {ngo.ensName}</p>}
-              <p className="text-gray-600">{ngo.description}</p>
-            </div>
-            {ngo.isVerified && <div className="badge badge-success gap-2">✓ Verified</div>}
-          </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <p>
+            <span className="font-semibold">ENS Name:</span> {ngo.ensName || "N/A"}
+          </p>
+          <p>
+            <span className="font-semibold">Wallet Address:</span> {ngo.walletAddress}
+          </p>
+          <p>
+            <span className="font-semibold">Location:</span> {ngo.location}
+          </p>
+        </div>
 
-          <div className="divider"></div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <h2 className="text-xl font-semibold mb-4">Organization Details</h2>
-              <div className="space-y-3">
-                <p>
-                  <strong>Website:</strong> {ngo.website || "Not provided"}
-                </p>
-                <p>
-                  <strong>Location:</strong> {ngo.location}
-                </p>
-                <p>
-                  <strong>President/Lead:</strong> {ngo.president}
-                </p>
-                <p>
-                  <strong>Wallet Address:</strong> {ngo.walletAddress}
-                </p>
-                <p>
-                  <strong>Registered:</strong> {new Date(ngo.registrationDate * 1000).toLocaleDateString()}
-                </p>
-              </div>
-            </div>
-
-            <div>
-              <h2 className="text-xl font-semibold mb-4">Additional Information</h2>
-              {ngo.avatar && (
-                <div className="mb-4">
-                  <img src={ngo.avatar} alt={ngo.name} className="w-32 h-32 rounded-full object-cover mx-auto" />
-                </div>
-              )}
-              <div className="badge badge-outline mr-2">NGO</div>
-              <div className="badge badge-outline">Non-Profit</div>
-            </div>
-          </div>
-
-          <div className="card-actions justify-end mt-6">
-            <button className="btn btn-primary">Donate</button>
-            <button className="btn btn-outline">Share</button>
-          </div>
+        <div>
+          <p>
+            <span className="font-semibold">President/Lead:</span> {ngo.president}
+          </p>
+          <p>
+            <span className="font-semibold">Website:</span>{" "}
+            {ngo.website ? (
+              <a href={ngo.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
+                {ngo.website}
+              </a>
+            ) : (
+              "N/A"
+            )}
+          </p>
+          <p>
+            <span className="font-semibold">Registered:</span>{" "}
+            {new Date(ngo.registrationDate * 1000).toLocaleDateString()}
+          </p>
         </div>
       </div>
     </div>

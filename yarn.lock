@@ -195,6 +195,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@bytecodealliance/preview2-shim@npm:0.17.2":
+  version: 0.17.2
+  resolution: "@bytecodealliance/preview2-shim@npm:0.17.2"
+  checksum: 444c243dc5c26b8e8dffb011e24b591f51c74c3e4daf0bab2b5aeeac988ff7bfcfbc7a7f461194e85259e3fe84ba53d23dbe8992eaf0da80cdd35b4626c62577
+  languageName: node
+  linkType: hard
+
 "@chainsafe/is-ip@npm:^2.0.1":
   version: 2.1.0
   resolution: "@chainsafe/is-ip@npm:2.1.0"
@@ -2794,6 +2801,15 @@ __metadata:
   peerDependencies:
     hardhat: ^2.24.1
   checksum: 8f194fce3400f6943d49cb34cf4919e4737f4d4637de49cf66b29cb32cc6f8a5a6fa00aa3e8dd0807a403212673fe62b9b1b6289a155d7c453bdc65d0358f40f
+  languageName: node
+  linkType: hard
+
+"@nomicfoundation/slang@npm:1.2.0":
+  version: 1.2.0
+  resolution: "@nomicfoundation/slang@npm:1.2.0"
+  dependencies:
+    "@bytecodealliance/preview2-shim": 0.17.2
+  checksum: bdcd8a7ac97bd29516edbd68ab734770f466683b5172a08f5c0e5b83b456623dc7def2789ceb5a0064b77bfaee933c2a992a9390aa65839bbd5c73a0fa130cd6
   languageName: node
   linkType: hard
 
@@ -14139,6 +14155,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"prettier-plugin-solidity@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "prettier-plugin-solidity@npm:2.1.0"
+  dependencies:
+    "@nomicfoundation/slang": 1.2.0
+    "@solidity-parser/parser": ^0.20.1
+    semver: ^7.7.2
+  peerDependencies:
+    prettier: ">=3.0.0"
+  checksum: 4ed26985748bcfa3dc7a05a0a24ae64ae1946f647b1b7038d255f948ab93a00083c557dee19adba266e6b8a82eb786eaf6188fcc8167b38f110a84d1d420fa05
+  languageName: node
+  linkType: hard
+
 "prettier-plugin-solidity@npm:~1.4.1":
   version: 1.4.3
   resolution: "prettier-plugin-solidity@npm:1.4.3"
@@ -14151,7 +14180,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:*, prettier@npm:^3.5.3":
+"prettier@npm:*, prettier@npm:^3.5.3, prettier@npm:^3.6.2":
   version: 3.6.2
   resolution: "prettier@npm:3.6.2"
   bin:
@@ -15095,8 +15124,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "se-2@workspace:."
   dependencies:
+    "@web3modal/ethereum": ^2.7.1
+    "@web3modal/react": ^2.7.1
     husky: ~9.1.6
     lint-staged: ~13.2.2
+    prettier: ^3.6.2
+    prettier-plugin-solidity: ^2.1.0
   languageName: unknown
   linkType: soft
 

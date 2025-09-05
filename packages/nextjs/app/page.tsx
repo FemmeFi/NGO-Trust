@@ -1,14 +1,12 @@
 // packages/nextjs/app/page.tsx
-import Link from 'next/link';
+import Link from "next/link";
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-gray-900 mb-6">
-            NGO Transparency Platform
-          </h1>
+          <h1 className="text-5xl font-bold text-gray-900 mb-6">NGO Transparency Platform</h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Discover and verify NGOs on the blockchain with complete transparency
           </p>
@@ -21,9 +19,7 @@ export default function Home() {
                 <span className="text-2xl">🔍</span>
               </div>
               <h2 className="card-title justify-center text-2xl mb-4">Search NGOs</h2>
-              <p className="text-gray-600 mb-6">
-                Browse all registered NGOs and view their transparent profiles
-              </p>
+              <p className="text-gray-600 mb-6">Browse all registered NGOs and view their transparent profiles</p>
               <Link href="/search" className="btn btn-primary w-full">
                 Explore NGOs
               </Link>
@@ -36,9 +32,7 @@ export default function Home() {
                 <span className="text-2xl">🏢</span>
               </div>
               <h2 className="card-title justify-center text-2xl mb-4">Register NGO</h2>
-              <p className="text-gray-600 mb-6">
-                Register your organization to build trust with donors and supporters
-              </p>
+              <p className="text-gray-600 mb-6">Register your organization to build trust with donors and supporters</p>
               <Link href="/register" className="btn btn-secondary w-full">
                 Register Now
               </Link>
