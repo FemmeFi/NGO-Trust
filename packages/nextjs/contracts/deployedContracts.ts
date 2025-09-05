@@ -151,6 +151,552 @@ const deployedContracts = {
       deployedOnBlock: 1,
     },
   },
+  11155111: {
+    NGORegistry: {
+      address: "0x19B6766d626305caFB8321521eCAE0Ee67E9abF1",
+      abi: [
+        {
+          inputs: [],
+          stateMutability: "nonpayable",
+          type: "constructor",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "owner",
+              type: "address",
+            },
+          ],
+          name: "OwnableInvalidOwner",
+          type: "error",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "account",
+              type: "address",
+            },
+          ],
+          name: "OwnableUnauthorizedAccount",
+          type: "error",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "ngoAddress",
+              type: "address",
+            },
+          ],
+          name: "NGODeleted",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "ngoAddress",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "string",
+              name: "name",
+              type: "string",
+            },
+            {
+              indexed: false,
+              internalType: "string",
+              name: "ensName",
+              type: "string",
+            },
+          ],
+          name: "NGORegistered",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "ngoAddress",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "string",
+              name: "field",
+              type: "string",
+            },
+          ],
+          name: "NGOUpdated",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "address",
+              name: "previousOwner",
+              type: "address",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "newOwner",
+              type: "address",
+            },
+          ],
+          name: "OwnershipTransferred",
+          type: "event",
+        },
+        {
+          inputs: [
+            {
+              internalType: "string",
+              name: "",
+              type: "string",
+            },
+          ],
+          name: "addressByENS",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "deleteNGO",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getAllNGOs",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "string",
+                  name: "name",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "description",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "website",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "location",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "president",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "ensName",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "avatar",
+                  type: "string",
+                },
+                {
+                  internalType: "address",
+                  name: "walletAddress",
+                  type: "address",
+                },
+                {
+                  internalType: "bool",
+                  name: "isVerified",
+                  type: "bool",
+                },
+                {
+                  internalType: "uint256",
+                  name: "registrationDate",
+                  type: "uint256",
+                },
+              ],
+              internalType: "struct NGORegistry.NGO[]",
+              name: "",
+              type: "tuple[]",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "_ngoAddress",
+              type: "address",
+            },
+          ],
+          name: "getNGOByAddress",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "string",
+                  name: "name",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "description",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "website",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "location",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "president",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "ensName",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "avatar",
+                  type: "string",
+                },
+                {
+                  internalType: "address",
+                  name: "walletAddress",
+                  type: "address",
+                },
+                {
+                  internalType: "bool",
+                  name: "isVerified",
+                  type: "bool",
+                },
+                {
+                  internalType: "uint256",
+                  name: "registrationDate",
+                  type: "uint256",
+                },
+              ],
+              internalType: "struct NGORegistry.NGO",
+              name: "",
+              type: "tuple",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "string",
+              name: "_ensName",
+              type: "string",
+            },
+          ],
+          name: "getNGOByENS",
+          outputs: [
+            {
+              components: [
+                {
+                  internalType: "string",
+                  name: "name",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "description",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "website",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "location",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "president",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "ensName",
+                  type: "string",
+                },
+                {
+                  internalType: "string",
+                  name: "avatar",
+                  type: "string",
+                },
+                {
+                  internalType: "address",
+                  name: "walletAddress",
+                  type: "address",
+                },
+                {
+                  internalType: "bool",
+                  name: "isVerified",
+                  type: "bool",
+                },
+                {
+                  internalType: "uint256",
+                  name: "registrationDate",
+                  type: "uint256",
+                },
+              ],
+              internalType: "struct NGORegistry.NGO",
+              name: "",
+              type: "tuple",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          name: "ngoByAddress",
+          outputs: [
+            {
+              internalType: "string",
+              name: "name",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "description",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "website",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "location",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "president",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "ensName",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "avatar",
+              type: "string",
+            },
+            {
+              internalType: "address",
+              name: "walletAddress",
+              type: "address",
+            },
+            {
+              internalType: "bool",
+              name: "isVerified",
+              type: "bool",
+            },
+            {
+              internalType: "uint256",
+              name: "registrationDate",
+              type: "uint256",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "owner",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "string",
+              name: "_name",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "_description",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "_website",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "_location",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "_president",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "_ensName",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "_avatar",
+              type: "string",
+            },
+          ],
+          name: "registerNGO",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "",
+              type: "uint256",
+            },
+          ],
+          name: "registeredNGOs",
+          outputs: [
+            {
+              internalType: "address",
+              name: "",
+              type: "address",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "renounceOwnership",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "address",
+              name: "newOwner",
+              type: "address",
+            },
+          ],
+          name: "transferOwnership",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "string",
+              name: "_name",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "_description",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "_website",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "_location",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "_president",
+              type: "string",
+            },
+            {
+              internalType: "string",
+              name: "_avatar",
+              type: "string",
+            },
+          ],
+          name: "updateNGO",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+      ],
+      inheritedFunctions: {
+        owner: "@openzeppelin/contracts/access/Ownable.sol",
+        renounceOwnership: "@openzeppelin/contracts/access/Ownable.sol",
+        transferOwnership: "@openzeppelin/contracts/access/Ownable.sol",
+      },
+      deployedOnBlock: 9138054,
+    },
+  },
 } as const;
 
 export default deployedContracts satisfies GenericContractsDeclaration;
