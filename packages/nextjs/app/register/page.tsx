@@ -21,7 +21,7 @@ export default function RegisterPage() {
   const { address, isConnected } = useAccount();
   const router = useRouter();
   
-  const { data: contractInfo } = useDeployedContractInfo("NGORegistry");
+  const { data: contractInfo } = useDeployedContractInfo("NGORegistry" as any);
   const { writeContract, data: hash, isPending } = useWriteContract();
   const { isLoading: isConfirming, isSuccess: isConfirmed } = useWaitForTransactionReceipt({ hash });
 

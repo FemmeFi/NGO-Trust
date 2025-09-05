@@ -23,7 +23,7 @@ export default function SearchPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredNGOs, setFilteredNGOs] = useState<NGO[]>([]);
   
-  const { data: contractInfo } = useDeployedContractInfo("NGORegistry");
+  const { data: contractInfo } = useDeployedContractInfo("NGORegistry" as any);
   const { data: allNGOs } = useReadContract({
     address: contractInfo?.address,
     abi: contractInfo?.abi,
