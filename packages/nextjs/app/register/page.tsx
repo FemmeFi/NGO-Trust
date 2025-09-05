@@ -2,6 +2,7 @@
 "use client";
 
 import { useState } from "react";
+import { Web3Button } from "@web3modal/react";
 import { useWriteContract, useWaitForTransactionReceipt, useAccount } from "wagmi";
 import { useDeployedContractInfo } from "~~/hooks/scaffold-eth/useDeployedContractInfo";
 import { useRouter } from "next/navigation";
@@ -62,7 +63,7 @@ export default function RegisterPage() {
         <div className="card bg-base-100 shadow-xl p-6 text-center">
           <h2 className="text-2xl font-bold mb-4">Connect Your Wallet</h2>
           <p className="mb-6">Please connect your wallet to register your NGO</p>
-          <w3m-connect-button />
+          <Web3Button />
         </div>
       ) : (
         <div className="card bg-base-100 shadow-xl p-6">
