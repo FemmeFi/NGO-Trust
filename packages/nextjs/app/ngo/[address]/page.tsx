@@ -1,11 +1,31 @@
 // packages/nextjs/app/ngo/[address]/page.tsx
 "use client";
 
-import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useParams } from "next/navigation";
 import { useReadContract } from "wagmi";
 import { useDeployedContractInfo } from "~~/hooks/scaffold-eth/useDeployedContractInfo";
-import Link from "next/link";
+
+// packages/nextjs/app/ngo/[address]/page.tsx
+
+// packages/nextjs/app/ngo/[address]/page.tsx
+
+// packages/nextjs/app/ngo/[address]/page.tsx
+
+// packages/nextjs/app/ngo/[address]/page.tsx
+
+// packages/nextjs/app/ngo/[address]/page.tsx
+
+// packages/nextjs/app/ngo/[address]/page.tsx
+
+// packages/nextjs/app/ngo/[address]/page.tsx
+
+// packages/nextjs/app/ngo/[address]/page.tsx
+
+// packages/nextjs/app/ngo/[address]/page.tsx
+
+// packages/nextjs/app/ngo/[address]/page.tsx
 
 interface NGO {
   name: string;
@@ -25,7 +45,7 @@ export default function NGODetailPage() {
   const address = params.address as string;
   const [ngo, setNgo] = useState<NGO | null>(null);
 
-  const { data: contractInfo } = useDeployedContractInfo("NGORegistry");
+  const { data: contractInfo } = useDeployedContractInfo("NGORegistry" as any);
   const { data: ngoData } = useReadContract({
     address: contractInfo?.address,
     abi: contractInfo?.abi,
@@ -63,16 +83,10 @@ export default function NGODetailPage() {
           <div className="flex items-start justify-between">
             <div>
               <h1 className="card-title text-3xl mb-2">{ngo.name}</h1>
-              {ngo.ensName && (
-                <p className="text-lg text-ens mb-2">🌐 {ngo.ensName}</p>
-              )}
+              {ngo.ensName && <p className="text-lg text-ens mb-2">🌐 {ngo.ensName}</p>}
               <p className="text-gray-600">{ngo.description}</p>
             </div>
-            {ngo.isVerified && (
-              <div className="badge badge-success gap-2">
-                ✓ Verified
-              </div>
-            )}
+            {ngo.isVerified && <div className="badge badge-success gap-2">✓ Verified</div>}
           </div>
 
           <div className="divider"></div>
@@ -81,11 +95,21 @@ export default function NGODetailPage() {
             <div>
               <h2 className="text-xl font-semibold mb-4">Organization Details</h2>
               <div className="space-y-3">
-                <p><strong>Website:</strong> {ngo.website || "Not provided"}</p>
-                <p><strong>Location:</strong> {ngo.location}</p>
-                <p><strong>President/Lead:</strong> {ngo.president}</p>
-                <p><strong>Wallet Address:</strong> {ngo.walletAddress}</p>
-                <p><strong>Registered:</strong> {new Date(ngo.registrationDate * 1000).toLocaleDateString()}</p>
+                <p>
+                  <strong>Website:</strong> {ngo.website || "Not provided"}
+                </p>
+                <p>
+                  <strong>Location:</strong> {ngo.location}
+                </p>
+                <p>
+                  <strong>President/Lead:</strong> {ngo.president}
+                </p>
+                <p>
+                  <strong>Wallet Address:</strong> {ngo.walletAddress}
+                </p>
+                <p>
+                  <strong>Registered:</strong> {new Date(ngo.registrationDate * 1000).toLocaleDateString()}
+                </p>
               </div>
             </div>
 
@@ -93,11 +117,7 @@ export default function NGODetailPage() {
               <h2 className="text-xl font-semibold mb-4">Additional Information</h2>
               {ngo.avatar && (
                 <div className="mb-4">
-                  <img 
-                    src={ngo.avatar} 
-                    alt={ngo.name}
-                    className="w-32 h-32 rounded-full object-cover mx-auto"
-                  />
+                  <img src={ngo.avatar} alt={ngo.name} className="w-32 h-32 rounded-full object-cover mx-auto" />
                 </div>
               )}
               <div className="badge badge-outline mr-2">NGO</div>
