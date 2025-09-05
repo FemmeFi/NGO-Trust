@@ -25,7 +25,7 @@ export default function NGODetailPage() {
   const address = params.address as string;
   const [ngo, setNgo] = useState<NGO | null>(null);
 
-  const { data: contractInfo } = useDeployedContractInfo("NGORegistry");
+  const { data: contractInfo } = useDeployedContractInfo("NGORegistry" as any);
   const { data: ngoData } = useReadContract({
     address: contractInfo?.address,
     abi: contractInfo?.abi,
