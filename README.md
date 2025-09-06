@@ -1,79 +1,114 @@
-# 🏗 Scaffold-ETH 2
+# NGO Transparency Platform
 
-<h4 align="center">
-  <a href="https://docs.scaffoldeth.io">Documentation</a> |
-  <a href="https://scaffoldeth.io">Website</a>
-</h4>
+A decentralized website for registering, browsing, and interacting with NGOs on the blockchain. 
 
-🧪 An open-source, up-to-date toolkit for building decentralized applications (dapps) on the Ethereum blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts.
+Access the website here: [NTP FemmeFi](https://ntp-femmefi.vercel.app/)
 
-⚙️ Built using NextJS, RainbowKit, Hardhat, Wagmi, Viem, and Typescript.
+## Features
 
-- ✅ **Contract Hot Reload**: Your frontend auto-adapts to your smart contract as you edit it.
-- 🪝 **[Custom hooks](https://docs.scaffoldeth.io/hooks/)**: Collection of React hooks wrapper around [wagmi](https://wagmi.sh/) to simplify interactions with smart contracts with typescript autocompletion.
-- 🧱 [**Components**](https://docs.scaffoldeth.io/components/): Collection of common web3 components to quickly build your frontend.
-- 🔥 **Burner Wallet & Local Faucet**: Quickly test your application with a burner wallet and local faucet.
-- 🔐 **Integration with Wallet Providers**: Connect to different wallet providers and interact with the Ethereum network.
+* **Register NGO:** Users can connect their wallet and register an NGO with basic details.
+* **Browse NGOs:** Search and view detailed information about registered NGOs.
+* **Wallet Integration:** Supports Ethereum wallets.
+* **Smart Contract Interaction:** Uses Wagmi hooks to read/write to deployed contracts.
+* **IPFS-ready Build:** Optional static export for IPFS deployment.
+* **Responsive Design:** Works on desktop and mobile.
 
-![Debug Contracts tab](https://github.com/scaffold-eth/scaffold-eth-2/assets/55535804/b237af0c-5027-4849-a5c1-2e31495cccb1)
+## Tech Stack
 
-## Requirements
+* **Frontend:** Next.js, TypeScript, TailwindCSS
+* **Smart Contracts:** Solidity, Hardhat
+* **Blockchain Integration:** Wagmi, Web3Modal, ethers.js
+* **Deployment:** Vercel
 
-Before you begin, you need to install the following tools:
-
-- [Node (>= v20.18.3)](https://nodejs.org/en/download/)
-- Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
-- [Git](https://git-scm.com/downloads)
-
-## Quickstart
-
-To get started with Scaffold-ETH 2, follow the steps below:
-
-1. Install dependencies if it was skipped in CLI:
+## Project Structure
 
 ```
-cd my-dapp-example
+packages/
+└── nextjs/             # Next.js frontend
+    ├── app/            # App Router pages
+    ├── components/     # UI components & reusable parts
+    ├── hooks/          # Custom hooks
+    ├── public/         # Static assets
+    ├── next.config.ts  # Next.js configuration
+    └── package.json
+packages/
+└── hardhat/            # Smart contracts
+    ├── contracts/
+    ├── scripts/
+    └── package.json
+```
+
+## Clone This Repository
+
+### Prerequisites
+
+* Node.js v20+
+* Yarn
+* Hardhat
+* Metamask or another Ethereum wallet
+
+### Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/FemmeFi/NGO-Trust/tree/main
+cd NGO-Trust
+```
+
+2. Install dependencies for both `nextjs` and `hardhat`:
+
+```bash
+cd packages/nextjs
+yarn install
+
+cd ../hardhat
 yarn install
 ```
 
-2. Run a local network in the first terminal:
 
-```
-yarn chain
-```
+### Running Locally
 
-This command starts a local Ethereum network using Hardhat. The network runs on your local machine and can be used for testing and development. You can customize the network configuration in `packages/hardhat/hardhat.config.ts`.
+#### Smart Contracts
 
-3. On a second terminal, deploy the test contract:
-
-```
-yarn deploy
+```bash
+cd packages/hardhat
+yarn deploy 
 ```
 
-This command deploys a test smart contract to the local network. The contract is located in `packages/hardhat/contracts` and can be modified to suit your needs. The `yarn deploy` command uses the deploy script located in `packages/hardhat/deploy` to deploy the contract to the network. You can also customize the deploy script.
+#### Frontend
 
-4. On a third terminal, start your NextJS app:
-
+```bash
+cd packages/nextjs
+yarn dev             
 ```
-yarn start
-```
 
-Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
+* Open [http://localhost:3000](http://localhost:3000) in your browser.
+* Connect your wallet and test registration/search.
 
-Run smart contract test with `yarn hardhat:test`
+### Deployment
 
-- Edit your smart contracts in `packages/hardhat/contracts`
-- Edit your frontend homepage at `packages/nextjs/app/page.tsx`. For guidance on [routing](https://nextjs.org/docs/app/building-your-application/routing/defining-routes) and configuring [pages/layouts](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts) checkout the Next.js documentation.
-- Edit your deployment scripts in `packages/hardhat/deploy`
+1. Make sure your `NEXT_PUBLIC_*` environment variables are set in Vercel.
+2. Push your branch to GitHub.
+3. In Vercel:
 
-## Documentation
+   * Select your branch for deployment.
+   * Vercel automatically builds and deploys.
 
-Visit our [docs](https://docs.scaffoldeth.io) to learn how to start building with Scaffold-ETH 2.
+## Development Workflow
 
-To know more about its features, check out our [website](https://scaffoldeth.io).
+* **Branches:**
 
-## Contributing to Scaffold-ETH 2
+  * `main` — stable production code
+  * `deployment` — current deployment-ready scaffold
+  * `backup-deployment` — a backup deployment
 
-We welcome contributions to Scaffold-ETH 2!
 
-Please see [CONTRIBUTING.MD](https://github.com/scaffold-eth/scaffold-eth-2/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-ETH 2.
+
+## Contributing
+
+1. Fork the repository.
+2. Create a branch for your feature: `git checkout -b feature-name`.
+3. Make changes
+4. Commit and push.
+5. Open a Pull Request against the `main` branch.
