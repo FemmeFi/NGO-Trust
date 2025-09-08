@@ -3,8 +3,10 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
+import { JsonRpcProvider } from "ethers";
 import { useReadContract } from "wagmi";
 import { useDeployedContractInfo } from "~~/hooks/scaffold-eth/useDeployedContractInfo";
+import { useTargetNetwork } from "~~/hooks/scaffold-eth/useTargetNetwork";
 
 interface NGO {
   name: string;
@@ -19,15 +21,26 @@ interface NGO {
   registrationDate: number;
 }
 
+interface Transaction {
+  hash: string;
+  from: string;
+  to: string;
+  value: string;
+  timeStamp: string;
+  isError: string;
+}
+
 export default function NGOPage() {
   const params = useParams();
+  const { targetNetwork } = useTargetNetwork();
   const [ngo, setNgo] = useState<NGO | null>(null);
 
   const [followers, setFollowers] = useState<string[]>([]);
   const [following, setFollowing] = useState<string[]>([]);
-  const [transactions, setTransactions] = useState<any[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [transactionsLoading, setTransactionsLoading] = useState(false);
   const [transactionsError, setTransactionsError] = useState<string | null>(null);
+  const [ensNames, setEnsNames] = useState<Record<string, string>>({});
 
   const { data: contractInfo } = useDeployedContractInfo("NGORegistry" as any);
 
@@ -36,6 +49,20 @@ export default function NGOPage() {
     abi: contractInfo?.abi,
     functionName: "getAllNGOs",
   });
+
+  // --- Reverse ENS resolution function ---
+  const resolveAddressToENS = async (address: string): Promise<string | null> => {
+    try {
+      // Use the target network's RPC URL for ENS resolution
+      const rpcUrl = targetNetwork.rpcUrls.default.http[0];
+      const provider = new JsonRpcProvider(rpcUrl);
+      const ensName = await provider.lookupAddress(address);
+      return ensName;
+    } catch (err) {
+      console.error("ENS reverse lookup failed:", err);
+      return null;
+    }
+  };
 
   // Set the NGO based on address
   useEffect(() => {
@@ -101,8 +128,32 @@ export default function NGOPage() {
         console.log("API Response:", data);
 
         if (data.success) {
-          setTransactions(data.transactions || []);
+          const fetchedTransactions = data.transactions || [];
+          setTransactions(fetchedTransactions);
           console.log("Transactions fetched successfully:", data.count, "transactions");
+
+          // Resolve ENS names for unique addresses in transactions
+          const uniqueAddresses = new Set<string>();
+          fetchedTransactions.forEach((tx: Transaction) => {
+            uniqueAddresses.add(tx.from.toLowerCase());
+            uniqueAddresses.add(tx.to.toLowerCase());
+          });
+
+          // Resolve ENS names for all unique addresses using the current network
+          const ensPromises = Array.from(uniqueAddresses).map(async address => {
+            const ensName = await resolveAddressToENS(address);
+            return { address, ensName };
+          });
+
+          const ensResults = await Promise.all(ensPromises);
+          const ensMap: Record<string, string> = {};
+          ensResults.forEach(({ address, ensName }) => {
+            if (ensName) {
+              ensMap[address.toLowerCase()] = ensName;
+            }
+          });
+
+          setEnsNames(ensMap);
         } else {
           setTransactions([]);
           // Don't show error for "No transactions found" - this is normal
@@ -123,7 +174,7 @@ export default function NGOPage() {
     };
 
     fetchTransactions();
-  }, [ngo]);
+  }, [ngo, resolveAddressToENS]);
 
   if (!ngo) {
     return (
@@ -276,11 +327,33 @@ export default function NGOPage() {
                         {tx.hash.slice(0, 8)}...{tx.hash.slice(-6)}
                       </a>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-mono" title={tx.from}>
-                      {tx.from.slice(0, 6)}...{tx.from.slice(-4)}
+                    <td className="px-6 py-4 whitespace-nowrap text-sm" title={tx.from}>
+                      {ensNames[tx.from.toLowerCase()] ? (
+                        <div>
+                          <div className="font-semibold text-blue-600">{ensNames[tx.from.toLowerCase()]}</div>
+                          <div className="font-mono text-xs text-gray-500">
+                            {tx.from.slice(0, 6)}...{tx.from.slice(-4)}
+                          </div>
+                        </div>
+                      ) : (
+                        <span className="font-mono">
+                          {tx.from.slice(0, 6)}...{tx.from.slice(-4)}
+                        </span>
+                      )}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-mono" title={tx.to}>
-                      {tx.to.slice(0, 6)}...{tx.to.slice(-4)}
+                    <td className="px-6 py-4 whitespace-nowrap text-sm" title={tx.to}>
+                      {ensNames[tx.to.toLowerCase()] ? (
+                        <div>
+                          <div className="font-semibold text-blue-600">{ensNames[tx.to.toLowerCase()]}</div>
+                          <div className="font-mono text-xs text-gray-500">
+                            {tx.to.slice(0, 6)}...{tx.to.slice(-4)}
+                          </div>
+                        </div>
+                      ) : (
+                        <span className="font-mono">
+                          {tx.to.slice(0, 6)}...{tx.to.slice(-4)}
+                        </span>
+                      )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       {(parseInt(tx.value) / 1e18).toFixed(4)} ETH

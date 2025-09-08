@@ -5,11 +5,14 @@ import { Address, isAddress } from "viem";
 import { normalize } from "viem/ens";
 import { useEnsAddress, useEnsAvatar, useEnsName } from "wagmi";
 import { CommonInputProps, InputBase, isENS } from "~~/components/scaffold-eth";
+import { useTargetNetwork } from "~~/hooks/scaffold-eth/useTargetNetwork";
 
 /**
  * Address input with ENS name resolution
  */
 export const AddressInput = ({ value, name, placeholder, onChange, disabled }: CommonInputProps<Address | string>) => {
+  const { targetNetwork } = useTargetNetwork();
+
   // Debounce the input to keep clean RPC calls when resolving ENS names
   // If the input is an address, we don't need to debounce it
   const [_debouncedValue] = useDebounceValue(value, 500);
@@ -25,7 +28,7 @@ export const AddressInput = ({ value, name, placeholder, onChange, disabled }: C
     isError: isEnsAddressError,
   } = useEnsAddress({
     name: settledValue,
-    chainId: 1,
+    chainId: targetNetwork.id,
     query: {
       gcTime: 30_000,
       enabled: isDebouncedValueLive && isENS(debouncedValue),
@@ -39,7 +42,7 @@ export const AddressInput = ({ value, name, placeholder, onChange, disabled }: C
     isError: isEnsNameError,
   } = useEnsName({
     address: settledValue as Address,
-    chainId: 1,
+    chainId: targetNetwork.id,
     query: {
       enabled: isAddress(debouncedValue),
       gcTime: 30_000,
@@ -48,7 +51,7 @@ export const AddressInput = ({ value, name, placeholder, onChange, disabled }: C
 
   const { data: ensAvatar, isLoading: isEnsAvatarLoading } = useEnsAvatar({
     name: ensName ? normalize(ensName) : undefined,
-    chainId: 1,
+    chainId: targetNetwork.id,
     query: {
       enabled: Boolean(ensName),
       gcTime: 30_000,

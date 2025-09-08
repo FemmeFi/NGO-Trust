@@ -1,4 +1,3 @@
-// packages/nextjs/app/register/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -9,26 +8,6 @@ import { Web3Button } from "@web3modal/react";
 import { JsonRpcProvider } from "ethers";
 import { useAccount, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { useDeployedContractInfo } from "~~/hooks/scaffold-eth/useDeployedContractInfo";
-
-// packages/nextjs/app/register/page.tsx
-
-// packages/nextjs/app/register/page.tsx
-
-// packages/nextjs/app/register/page.tsx
-
-// packages/nextjs/app/register/page.tsx
-
-// packages/nextjs/app/register/page.tsx
-
-// packages/nextjs/app/register/page.tsx
-
-// packages/nextjs/app/register/page.tsx
-
-// packages/nextjs/app/register/page.tsx
-
-// packages/nextjs/app/register/page.tsx
-
-// packages/nextjs/app/register/page.tsx
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -284,20 +263,12 @@ export default function RegisterPage() {
               </div>
 
               <div>
-                <label className="label">Avatar *</label>
+                <label className="label">Avatar URL *</label>
                 <input
-                  type="file"
-                  accept="image/*"
-                  onChange={e => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      const reader = new FileReader();
-                      reader.onload = () => {
-                        setFormData(prev => ({ ...prev, avatar: reader.result as string }));
-                      };
-                      reader.readAsDataURL(file);
-                    }
-                  }}
+                  type="url"
+                  placeholder="https://example.com/avatar.jpg"
+                  value={formData.avatar}
+                  onChange={e => setFormData({ ...formData, avatar: e.target.value })}
                   className="input input-bordered w-full"
                   required
                 />
