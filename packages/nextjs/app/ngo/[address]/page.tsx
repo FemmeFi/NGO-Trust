@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { JsonRpcProvider } from "ethers";
@@ -51,18 +51,27 @@ export default function NGOPage() {
   });
 
   // --- Reverse ENS resolution function ---
-  const resolveAddressToENS = async (address: string): Promise<string | null> => {
-    try {
-      // Use the target network's RPC URL for ENS resolution
-      const rpcUrl = targetNetwork.rpcUrls.default.http[0];
-      const provider = new JsonRpcProvider(rpcUrl);
-      const ensName = await provider.lookupAddress(address);
-      return ensName;
-    } catch (err) {
-      console.error("ENS reverse lookup failed:", err);
-      return null;
-    }
-  };
+  const resolveAddressToENS = useCallback(
+    async (address: string): Promise<string | null> => {
+      try {
+        // Validate address before attempting ENS resolution
+        if (!address || address.trim() === "" || !address.startsWith("0x") || address.length !== 42) {
+          console.log("Skipping ENS resolution for invalid address:", address);
+          return null;
+        }
+
+        // Use the target network's RPC URL for ENS resolution
+        const rpcUrl = targetNetwork.rpcUrls.default.http[0];
+        const provider = new JsonRpcProvider(rpcUrl);
+        const ensName = await provider.lookupAddress(address);
+        return ensName;
+      } catch (err) {
+        console.error("ENS reverse lookup failed:", err);
+        return null;
+      }
+    },
+    [targetNetwork.rpcUrls.default.http],
+  );
 
   // Set the NGO based on address
   useEffect(() => {
@@ -132,14 +141,25 @@ export default function NGOPage() {
           setTransactions(fetchedTransactions);
           console.log("Transactions fetched successfully:", data.count, "transactions");
 
+          // Debug: Log first few transactions to see their structure
+          if (fetchedTransactions.length > 0) {
+            console.log("Sample transaction data:", fetchedTransactions.slice(0, 2));
+          }
+
           // Resolve ENS names for unique addresses in transactions
           const uniqueAddresses = new Set<string>();
           fetchedTransactions.forEach((tx: Transaction) => {
-            uniqueAddresses.add(tx.from.toLowerCase());
-            uniqueAddresses.add(tx.to.toLowerCase());
+            // Only add valid addresses to the set
+            if (tx.from && tx.from.trim() !== "" && tx.from.startsWith("0x") && tx.from.length === 42) {
+              uniqueAddresses.add(tx.from.toLowerCase());
+            }
+            if (tx.to && tx.to.trim() !== "" && tx.to.startsWith("0x") && tx.to.length === 42) {
+              uniqueAddresses.add(tx.to.toLowerCase());
+            }
           });
 
           // Resolve ENS names for all unique addresses using the current network
+          console.log("Resolving ENS names for", uniqueAddresses.size, "unique addresses");
           const ensPromises = Array.from(uniqueAddresses).map(async address => {
             const ensName = await resolveAddressToENS(address);
             return { address, ensName };
@@ -292,82 +312,91 @@ export default function NGOPage() {
           </div>
         ) : transactions.length ? (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <thead className="bg-gray-50 dark:bg-gray-800">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                     Hash
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                     From
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">To</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    To
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                     Value
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                     Date
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                     Status
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
                 {transactions.slice(0, 10).map(tx => (
                   <tr key={tx.hash}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-mono">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-900 dark:text-gray-100">
                       <a
                         href={`https://sepolia.etherscan.io/tx/${tx.hash}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-blue-600 hover:text-blue-800"
+                        className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
                         title={tx.hash}
                       >
                         {tx.hash.slice(0, 8)}...{tx.hash.slice(-6)}
                       </a>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm" title={tx.from}>
+                    <td
+                      className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100"
+                      title={tx.from}
+                    >
                       {ensNames[tx.from.toLowerCase()] ? (
                         <div>
-                          <div className="font-semibold text-blue-600">{ensNames[tx.from.toLowerCase()]}</div>
-                          <div className="font-mono text-xs text-gray-500">
+                          <div className="font-semibold text-blue-600 dark:text-blue-400">
+                            {ensNames[tx.from.toLowerCase()]}
+                          </div>
+                          <div className="font-mono text-xs text-gray-500 dark:text-gray-400">
                             {tx.from.slice(0, 6)}...{tx.from.slice(-4)}
                           </div>
                         </div>
                       ) : (
-                        <span className="font-mono">
+                        <span className="font-mono text-gray-900 dark:text-gray-100">
                           {tx.from.slice(0, 6)}...{tx.from.slice(-4)}
                         </span>
                       )}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm" title={tx.to}>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100" title={tx.to}>
                       {ensNames[tx.to.toLowerCase()] ? (
                         <div>
-                          <div className="font-semibold text-blue-600">{ensNames[tx.to.toLowerCase()]}</div>
-                          <div className="font-mono text-xs text-gray-500">
+                          <div className="font-semibold text-blue-600 dark:text-blue-400">
+                            {ensNames[tx.to.toLowerCase()]}
+                          </div>
+                          <div className="font-mono text-xs text-gray-500 dark:text-gray-400">
                             {tx.to.slice(0, 6)}...{tx.to.slice(-4)}
                           </div>
                         </div>
                       ) : (
-                        <span className="font-mono">
+                        <span className="font-mono text-gray-900 dark:text-gray-100">
                           {tx.to.slice(0, 6)}...{tx.to.slice(-4)}
                         </span>
                       )}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                       {(parseInt(tx.value) / 1e18).toFixed(4)} ETH
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                       {new Date(parseInt(tx.timeStamp) * 1000).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       {tx.isError === "0" ? (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
                           Success
                         </span>
                       ) : (
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
                           Failed
                         </span>
                       )}
@@ -377,13 +406,13 @@ export default function NGOPage() {
               </tbody>
             </table>
             {transactions.length > 10 && (
-              <p className="mt-2 text-sm text-gray-500 text-center">
+              <p className="mt-2 text-sm text-gray-500 dark:text-gray-400 text-center">
                 Showing first 10 transactions. View all on{" "}
                 <a
                   href={`https://sepolia.etherscan.io/address/${ngo.walletAddress}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-600 hover:text-blue-800"
+                  className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
                 >
                   Etherscan
                 </a>
@@ -392,8 +421,10 @@ export default function NGOPage() {
           </div>
         ) : (
           <div className="text-center py-8">
-            <p className="text-gray-500">No transaction data available.</p>
-            <p className="text-sm text-gray-400 mt-1">This address may not have any transactions on Sepolia testnet.</p>
+            <p className="text-gray-500 dark:text-gray-400">No transaction data available.</p>
+            <p className="text-sm text-gray-400 dark:text-gray-500 mt-1">
+              This address may not have any transactions on Sepolia testnet.
+            </p>
           </div>
         )}
       </div>
