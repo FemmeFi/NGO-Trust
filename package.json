@@ -61,6 +61,7 @@
   },
   "dependencies": {
     "@web3modal/ethereum": "^2.7.1",
-    "@web3modal/react": "^2.7.1"
+    "@web3modal/react": "^2.7.1",
+    "ethers": "^6.15.0"
   }
 }
